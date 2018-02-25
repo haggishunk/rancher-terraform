@@ -1,0 +1,9 @@
+.terraform
+*.swp
+*.swo
+*.tfvars
+certs
+script
+nginx
+html
+terraform.tfstate.d

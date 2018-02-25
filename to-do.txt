@@ -1,0 +1,3 @@
+I would like to de-couple the DNS records from this deployment
+
+How do I feed the master node IP into the separate DNS tf file?

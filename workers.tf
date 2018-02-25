@@ -1,12 +1,12 @@
-# provision master node
+# provision worker node
 # create non-root admin acct
 # install docker with overlay driver
-resource "digitalocean_droplet" "captain" {
+resource "digitalocean_droplet" "fisherman" {
   region             = "${var.region}"
-  count              = "${var.master["qty"]}"
-  image              = "${var.master["image"]}"
-  name               = "${var.master["name"]}-${count.index}"
-  size               = "${var.master["size"]}"
+  count              = "${var.worker["qty"]}"
+  image              = "${var.worker["image"]}"
+  name               = "${var.worker["name"]}-${count.index}"
+  size               = "${var.worker["size"]}"
   backups            = "${var.backups}"
   ipv6               = "${var.ipv6}"
   monitoring         = "${var.monitoring}"
@@ -53,29 +53,8 @@ resource "digitalocean_droplet" "captain" {
       "${data.template_file.rancher-server.rendered}",
     ]
   }
-  # SSL cert
-  provisioner "file" {
-    source      = "${path.root}/certs/${local.deployment_name}.${var.domain}.crt"
-    destination = "/home/${var.user}/${local.deployment_name}.${var.domain}.crt"
-  }
-  # SSL key
-  provisioner "file" {
-    source      = "${path.root}/certs/${local.deployment_name}.${var.domain}.key"
-    destination = "/home/${var.user}/${local.deployment_name}.${var.domain}.key"
-  }
-  # SSL cert & key placement
-  provisioner "remote-exec" {
-    inline = [
-      "${data.template_file.ssl-certs.rendered}",
-      ]
-  }
-  # send nginx reverse proxy script
-  provisioner "file" {
-    source = "${path.root}/nginx/conf.d/rancher-ui-ssl.conf.py"
-    destination = "/home/${var.user}/rancher-ui-ssl.conf.py"
-  }
 }
 
-output "captain_ip" {
-  value = "${digitalocean_droplet.captain.*.ipv4_address}"
+output "fisherman_ip" {
+  value = "${digitalocean_droplet.fisherman.*.ipv4_address}"
 }
