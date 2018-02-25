@@ -47,12 +47,6 @@ resource "digitalocean_droplet" "fisherman" {
       "${data.template_file.docker-install.rendered}",
     ]
   }
-  # start rancher server
-  provisioner "remote-exec" {
-    inline = [
-      "${data.template_file.rancher-server.rendered}",
-    ]
-  }
 }
 
 output "fisherman_ip" {

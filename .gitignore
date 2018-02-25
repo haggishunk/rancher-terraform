@@ -7,3 +7,4 @@ script
 nginx
 html
 terraform.tfstate.d
+tests

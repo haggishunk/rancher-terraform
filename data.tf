@@ -35,11 +35,20 @@ data "template_file" "rancher-server" {
   template = "${file("${path.root}/templates/rancher-server.sh")}"
 
   vars {
-    rancher-server-name = "rancher-${local.deployment_name}"
-    db-host             = "${var.db-host}"
-    db-port             = "${var.db-port}"
-    db-name             = "${var.db-name}"
-    db-user             = "${var.db-user}"
-    db-pass             = "${var.db-pass}"
+    rancher-name = "${local.rancher_name}"
+    db-host      = "${var.db-host}"
+    db-port      = "${var.db-port}"
+    db-name      = "${var.db-name}"
+    db-user      = "${var.db-user}"
+    db-pass      = "${var.db-pass}"
+  }
+}
+
+data "template_file" "nginx" {
+  template = "${file("${path.root}/templates/nginx.sh")}"
+
+  vars {
+    rancher-name = "${local.rancher_name}"
+    user         = "${var.user}"
   }
 }
