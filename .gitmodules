@@ -1,0 +1,3 @@
+[submodule "terraform-template-files"]
+	path = terraform-template-files
+	url = git@github.com:haggishunk/terraform-template-files

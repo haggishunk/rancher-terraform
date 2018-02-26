@@ -1,5 +1,5 @@
 data "template_file" "newuser" {
-  template = "${file("${path.root}/templates/newuser-template.sh")}"
+  template = "${file("${path.root}/terraform-template-files/newuser-template.sh")}"
 
   vars {
     user = "${var.user}"
@@ -7,7 +7,7 @@ data "template_file" "newuser" {
 }
 
 data "template_file" "docker-install" {
-  template = "${file("${path.root}/templates/docker-install.sh")}"
+  template = "${file("${path.root}/terraform-template-files/docker-install-17.03.sh")}"
 
   vars {
     user = "${var.user}"
@@ -15,7 +15,7 @@ data "template_file" "docker-install" {
 }
 
 data "template_file" "docker-daemon" {
-  template = "${file("${path.root}/templates/docker-daemon.json")}"
+  template = "${file("${path.root}/terraform-template-files/docker-daemon.json")}"
 
   vars {
     storage_driver = "${var.storage_driver}"
@@ -23,7 +23,7 @@ data "template_file" "docker-daemon" {
 }
 
 data "template_file" "ssl-certs" {
-  template = "${file("${path.root}/templates/ssl-certs.sh")}"
+  template = "${file("${path.root}/terraform-template-files/ssl-certs.sh")}"
 
   vars {
     user      = "${var.user}"
@@ -32,7 +32,7 @@ data "template_file" "ssl-certs" {
 }
 
 data "template_file" "rancher-server" {
-  template = "${file("${path.root}/templates/rancher-server.sh")}"
+  template = "${file("${path.root}/terraform-template-files/rancher-server.sh")}"
 
   vars {
     rancher-name = "${local.rancher_name}"
@@ -45,7 +45,7 @@ data "template_file" "rancher-server" {
 }
 
 data "template_file" "nginx" {
-  template = "${file("${path.root}/templates/nginx.sh")}"
+  template = "${file("${path.root}/terraform-template-files/nginx.sh")}"
 
   vars {
     rancher-name = "${local.rancher_name}"
