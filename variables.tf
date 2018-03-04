@@ -26,7 +26,6 @@ variable "worker" {
 variable "ssh_ids" {
   type = "list"
 }
-variable "ssh_pri_file" {}
 
 variable "user" {}
 variable "storage_driver" {}
