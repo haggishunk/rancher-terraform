@@ -26,7 +26,6 @@ resource "digitalocean_droplet" "captain" {
       type        = "ssh"
       host        = "${self.ipv4_address}"
       user        = "root"
-      private_key = "${file(var.ssh_pri_file)}"
     }
     inline = [
       "${data.template_file.newuser.rendered}",
@@ -37,7 +36,6 @@ resource "digitalocean_droplet" "captain" {
     type        = "ssh"
     host        = "${self.ipv4_address}"
     user        = "${var.user}"
-    private_key = "${file(var.ssh_pri_file)}"
   }
   # docker storage driver
   provisioner "file" {
@@ -60,10 +58,16 @@ resource "digitalocean_droplet" "captain" {
       "${data.template_file.ssl-certs.rendered}",
       ]
   }
-  # send nginx reverse proxy script
+  #  nginx reverse proxy configuration
   provisioner "file" {
-    source = "${path.root}/nginx/conf.d/rancher-ui-ssl.conf.py"
-    destination = "/home/${var.user}/rancher-ui-ssl.conf.py"
+    content = "${data.template_file.nginx-rancher-ui-conf.rendered}"
+    destination = "/home/${var.user}/nginx-rancher-ui.conf"
+  }
+  # Nginx conf file placement
+  provisioner "remote-exec" {
+    inline = [
+      "${data.template_file.nginx-conf.rendered}",
+      ]
   }
 }
 
@@ -75,7 +79,6 @@ resource "null_resource" "salty" {
     type        = "ssh"
     host        = "${element(digitalocean_droplet.captain.*.ipv4_address, count.index)}"
     user        = "${var.user}"
-    private_key = "${file(var.ssh_pri_file)}"
   }
   # install docker & restart with selected storage driver
   provisioner "remote-exec" {
@@ -89,14 +92,28 @@ resource "null_resource" "salty" {
       "${data.template_file.rancher-server.rendered}",
     ]
   }
-  # start rancher server
+  # start nginx server
   provisioner "remote-exec" {
     inline = [
       "${data.template_file.nginx.rendered}",
     ]
   }
+  # make bash pretty
+  provisioner "file" {
+    content     = "${data.template_file.bashrc.rendered}"
+    destination = "/home/${var.user}/.bashrc"
+  }
+  # make cursor movements natural
+  provisioner "file" {
+    content     = "${data.template_file.inputrc.rendered}"
+    destination = "/home/${var.user}/.inputrc"
+  }
 }
 
 output "captain_ip" {
   value = "${digitalocean_droplet.captain.*.ipv4_address}"
+}
+
+output "captain_ssh" {
+  value = "${var.user}@${digitalocean_droplet.captain.*.ipv4_address}"
 }
