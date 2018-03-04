@@ -26,7 +26,6 @@ data "template_file" "ssl-certs" {
   template = "${file("${path.root}/terraform-template-files/ssl-certs.sh")}"
 
   vars {
-    user      = "${var.user}"
     cert_name = "${local.deployment_name}.${var.domain}"
   }
 }
@@ -49,6 +48,31 @@ data "template_file" "nginx" {
 
   vars {
     rancher-name = "${local.rancher_name}"
-    user         = "${var.user}"
+  }
+}
+
+data "template_file" "nginx-rancher-ui-conf" {
+  template = "${file("${path.root}/terraform-template-files/nginx-rancher-ui.conf")}"
+
+  vars {
+    container_name = "${local.rancher_name}"
+    domain_name    = "${var.domain}"
+  }
+}
+
+data "template_file" "nginx-conf" {
+  template = "${file("${path.root}/terraform-template-files/nginx-conf.sh")}"
+}
+
+data "template_file" "inputrc" {
+  template = "${file("${path.root}/terraform-template-files/inputrc")}"
+}
+
+data "template_file" "bashrc" {
+  template = "${file("${path.root}/terraform-template-files/bashrc")}"
+
+  vars {
+    col1 = 39
+    col2 = 202
   }
 }
