@@ -110,10 +110,10 @@ resource "null_resource" "salty" {
   }
 }
 
-output "captain_ip" {
-  value = "${digitalocean_droplet.captain.*.ipv4_address}"
+output "user" {
+  value = "${var.user}"
 }
 
-output "captain_ssh" {
-  value = "${var.user}@${digitalocean_droplet.captain.*.ipv4_address}"
+output "captain_ip" {
+  value = "${digitalocean_droplet.captain.*.ipv4_address}"
 }
