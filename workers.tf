@@ -23,7 +23,6 @@ resource "digitalocean_droplet" "fisherman" {
       type        = "ssh"
       host        = "${self.ipv4_address}"
       user        = "root"
-      private_key = "${file(var.ssh_pri_file)}"
     }
     inline = [
       "${data.template_file.newuser.rendered}",
@@ -34,7 +33,6 @@ resource "digitalocean_droplet" "fisherman" {
     type        = "ssh"
     host        = "${self.ipv4_address}"
     user        = "${var.user}"
-    private_key = "${file(var.ssh_pri_file)}"
   }
   # docker storage driver
   provisioner "file" {
@@ -46,6 +44,25 @@ resource "digitalocean_droplet" "fisherman" {
     inline = [
       "${data.template_file.docker-install.rendered}",
     ]
+  }
+}
+
+resource "null_resource" "sealegs" {
+  count = "${var.worker["qty"]}"
+  connection {
+    type        = "ssh"
+    host        = "${element(digitalocean_droplet.fisherman.*.ipv4_address, count.index)}"
+    user        = "${var.user}"
+  }
+  # make bash pretty
+  provisioner "file" {
+    content     = "${data.template_file.bashrc.rendered}"
+    destination = "/home/${var.user}/.bashrc"
+  }
+  # make cursor movements natural
+  provisioner "file" {
+    content     = "${data.template_file.inputrc.rendered}"
+    destination = "/home/${var.user}/.inputrc"
   }
 }
 
