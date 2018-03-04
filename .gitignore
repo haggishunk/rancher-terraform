@@ -8,3 +8,4 @@ nginx
 html
 terraform.tfstate.d
 tests
+plan*
